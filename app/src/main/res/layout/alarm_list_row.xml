@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <TextView
+        android:id="@+id/alarmTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp"
+        android:layout_toLeftOf="@+id/alarmToggle"
+        android:layout_toStartOf="@+id/alarmToggle"
+        android:gravity="center_horizontal"
+        android:text="5:00 PM"
+        android:textSize="30sp" />
+
+    <ToggleButton
+        android:id="@+id/alarmToggle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="27dp"
+        android:background="@drawable/alarm_toggle"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textOff=""
+        android:textOn=""
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="27dp" />
+
+    <TextView
+        android:id="@+id/alarmNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/alarmTimeText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/alarmToggle"
+        android:layout_toStartOf="@+id/alarmToggle"
+        android:gravity="center"
+        android:text="Name"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+</RelativeLayout>
