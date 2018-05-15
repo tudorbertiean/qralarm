@@ -208,7 +208,7 @@ public class AddAlarmActivity extends AppCompatActivity{
         ArrayList<Integer> ids = new ArrayList<>();
         if (daysActive.size() == 0)
             daysActive.add(0);
-        for (Integer day : daysActive){
+        for (Integer ignored : daysActive){
             ids.add(Helper.incrementAlarmCounter(getApplicationContext()));
         }
         Alarm alarm = new Alarm(mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute(), ids, oneTimeBox.isChecked(), daysActive, alarmName.getText().toString());

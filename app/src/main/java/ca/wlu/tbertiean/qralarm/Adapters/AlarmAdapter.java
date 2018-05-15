@@ -25,9 +25,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     }
 
     public class AlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener , View.OnLongClickListener{
-        public TextView time;
         public ToggleButton toggle;
-        public TextView name;
+        public TextView name, repeating, time;
 
         public AlarmViewHolder(View view) {
             super(view);
@@ -36,6 +35,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             time = (TextView) view.findViewById(R.id.alarmTimeText);
             toggle = (ToggleButton) view.findViewById(R.id.alarmToggle);
             name = (TextView) view.findViewById(R.id.alarmNameText);
+            repeating = (TextView) view.findViewById(R.id.alarmRepeatingText);
         }
 
         public void bindAlarm(final Alarm alarm){
@@ -43,13 +43,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             toggle.setChecked(alarm.isToggle());
             name.setText(alarm.getName());
             if (alarm.isSelected()) {
-                itemView.setBackgroundColor(0xFF1abc9c);
+                itemView.setBackgroundColor(itemView.getResources().getColor(R.color.alarmSelected));
                 toggle.setEnabled(false);
             }
             else {
-                itemView.setBackgroundColor(0xFFffffff);
+                itemView.setBackgroundColor(itemView.getResources().getColor(R.color.alarmNotSelected));
                 toggle.setEnabled(true);
             }
+
+            String repeatingText = alarm.isOneTime() ? itemView.getResources().getString(R.string.onetime_alarm) : (itemView.getResources().getString(R.string.repeating_alarm));
+            repeating.setText(repeatingText);
 
             toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

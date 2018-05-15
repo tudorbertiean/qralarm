@@ -12,10 +12,11 @@ public abstract class WakeLocker {
         if (wakeLock != null) wakeLock.release();
 
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        assert pm != null;
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |
                 PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                PowerManager.ON_AFTER_RELEASE, AlarmListActivity.TAG);
-        wakeLock.acquire();
+                PowerManager.ON_AFTER_RELEASE, "AlarmListActivity");
+        wakeLock.acquire(10*60*1000L /*10 minutes*/);
     }
 
     public static void release() {

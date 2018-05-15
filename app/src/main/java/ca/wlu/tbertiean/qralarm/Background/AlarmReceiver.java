@@ -23,19 +23,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         WakeLocker.acquire(context); // Turn screen on even if a lock screen is present
-        //Turn the alarm off if one time use
-        Boolean oneTime = intent.getBooleanExtra(ARG_IS_ONE_TIME, false);
-        Log.e("AlarmReceiver", "IsOneTime: " + oneTime);
-        if (oneTime) {
-            Gson gson = new Gson();
-            String json = intent.getStringExtra(ARG_SEND_ALARM_TO_RECEIVER);
-            Type type = new TypeToken<Alarm>() {}.getType();
-            Alarm alarm = gson.fromJson(json, type);
-            alarm.setToggle(false);
-            Helper.saveSingleAlarm(context, alarm);
-        }
-
         Intent i = new Intent(context, ScannerActivity.class);
+        i.putExtra(ARG_SEND_ALARM_TO_RECEIVER, intent.getStringExtra(ARG_SEND_ALARM_TO_RECEIVER));
+        i.putExtra(ARG_IS_ONE_TIME, intent.getBooleanExtra(ARG_IS_ONE_TIME, false));
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
     }

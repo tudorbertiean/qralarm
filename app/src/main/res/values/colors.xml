@@ -5,6 +5,10 @@
     <color name="colorAccent">#1abc9c</color>
     <color name="alarmDivider">#ECF0F1</color>
 
+    <!-- Alarm Row -->
+    <color name="alarmSelected">#1abc9c</color>
+    <color name="alarmNotSelected">#ffffff</color>
+
     <array name="rect_color">
         <item>@color/color_blue</item>
         <item>@color/color_brown</item>

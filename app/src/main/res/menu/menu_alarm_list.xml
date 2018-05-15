@@ -6,20 +6,20 @@
     <item android:id="@+id/settingsMenu"
         android:title="@string/action_settings"
         android:icon="@mipmap/settings"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:visible="true"/>
 
     <item android:id="@+id/deleteMenu"
         android:title="@string/delete_menu"
         android:orderInCategory="0"
         android:icon="@mipmap/delete_alarm"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:visible="false"/>
 
     <item android:id="@+id/editMenu"
         android:title="@string/edit_menu"
         android:orderInCategory="0"
         android:icon="@mipmap/edit"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:visible="false"/>
 </menu>

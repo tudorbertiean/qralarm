@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
+import ca.wlu.tbertiean.qralarm.Activities.Settings.SettingsActivity;
 import ca.wlu.tbertiean.qralarm.Adapters.AlarmAdapter;
 import ca.wlu.tbertiean.qralarm.Adapters.SimpleDividerItemDecoration;
 import ca.wlu.tbertiean.qralarm.Background.AlarmReceiver;
@@ -48,7 +48,7 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
     private String ARG_ADD_ALARM = "ca.wlu.tbertiean.AddAlarm";
     private String ARG_EDIT_ALARM = "ca.wlu.tbertiean.EditAlarm";
     private MenuItem mSettingsMenu, mDeleteMenu, mEditMenu;
-    public static Boolean activityVisible; //Use when alarm is triggered to know if it should make a new activtiy or not
+    public static Boolean activityVisible; //Use when alarm is triggered to know if it should make a new activity or not
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +58,6 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
         TAG = getLocalClassName();
         context = this;
         activityVisible = true;
-
-        retrieveAlarms();
-        setupUI();
     }
 
     @Override
@@ -76,7 +73,8 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
             alarmList.add(0, alarm);
             mAdapter.notifyItemInserted(0);
             Helper.saveAlarmsToDisk(context, alarmList);
-        }else if(requestCode == EDIT_ALARM_RESULT && resultCode != RESULT_CANCELED){
+        }
+        else if(requestCode == EDIT_ALARM_RESULT && resultCode != RESULT_CANCELED){
             mEditMenu.setVisible(false);
             mDeleteMenu.setVisible(false);
             mSettingsMenu.setVisible(true);
@@ -91,7 +89,8 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
             alarmList.set(index, alarm);
             mAdapter.notifyItemChanged(index);
             Helper.saveAlarmsToDisk(context, alarmList);
-        }else if (requestCode == EDIT_ALARM_RESULT && resultCode == RESULT_CANCELED){
+        }
+        else if (requestCode == EDIT_ALARM_RESULT && resultCode == RESULT_CANCELED){
             mEditMenu.setVisible(false);
             mDeleteMenu.setVisible(false);
             mSettingsMenu.setVisible(true);
@@ -108,6 +107,8 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
+        retrieveAlarms();
+        setupUI();
     }
 
     @Override
@@ -144,10 +145,6 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
     }
 
     private void setupUI(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,8 +219,8 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
         Helper.saveAlarmsToDisk(context, alarmList);
     }
 
-    private void setAlarm(Alarm alarm, boolean toggle){
-        alarm.setToggle(toggle);
+    private void setAlarm(Alarm alarm, boolean on){
+        alarm.setToggle(on);
         ArrayList<Integer> alarmDays = alarm.getDaysActive();
         boolean snackbarShown = false;
         long triggerAlarmAt = 0;
@@ -235,7 +232,7 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
             Intent alarmIntent = new Intent(context, AlarmReceiver.class);
 
             int day = (int) iter.next();
-            if (toggle) {
+            if (on) {
                 // Set the alarm to start
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
@@ -263,7 +260,12 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
                     calendar.set(Calendar.DAY_OF_WEEK, day);
                     alarmIntent.putExtra(ARG_IS_ONE_TIME, false);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId, alarmIntent, 0);
-                    manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), manager.INTERVAL_DAY * 7, pendingIntent);
+                    assert manager != null;
+                    // If the day is set for a time before the current time, set the alarm for that day but on the next week
+                    if (day < currentCalendar.get(Calendar.DAY_OF_WEEK) ||
+                            day == currentCalendar.get(Calendar.DAY_OF_WEEK) && calendar.getTimeInMillis() < currentCalendar.getTimeInMillis())
+                        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 7);
+                    manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
 
                     // Determine which "time to trigger" to show on the snackbar
                     if (day - currentCalendar.get(Calendar.DAY_OF_WEEK) == 0 && currentCalendar.getTimeInMillis() < calendar.getTimeInMillis()) {
@@ -279,7 +281,7 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
             }
             else { //Alarm has been turned off
                 PendingIntent pendingIntent1 = PendingIntent.getBroadcast(context, alarmId, alarmIntent, 0);
-                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, alarmIntent, 0); // Turn off snooze is it was triggered
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, alarmIntent, 0); // Turn off snooze if it was triggered
                 manager.cancel(pendingIntent1);
                 manager.cancel(pendingIntent2);
             }

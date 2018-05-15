@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "ca.wlu.tbertiean.qralarm"
         minSdkVersion 19
@@ -21,6 +20,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -33,5 +33,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:support-vector-drawable:25.2.0'
+    compile 'com.android.support:preference-v7:25.0.0'
+
     testCompile 'junit:junit:4.12'
 }

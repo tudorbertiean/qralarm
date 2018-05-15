@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/QRAlarm.iml" filepath="$PROJECT_DIR$/QRAlarm.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qralarm.iml" filepath="$PROJECT_DIR$/qralarm.iml" />
     </modules>
   </component>
 </project>

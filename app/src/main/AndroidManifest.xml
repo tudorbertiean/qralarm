@@ -3,6 +3,7 @@
     package="ca.wlu.tbertiean.qralarm">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -15,14 +16,16 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activities.AlarmListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.AddAlarmActivity" />
+        <activity
+            android:name=".Activities.AddAlarmActivity"
+            android:label="Alarm" />
 
         <receiver android:name=".Background.AlarmReceiver" />
 
@@ -30,8 +33,24 @@
 
         <activity android:name=".Activities.ScannerActivity" />
         <activity
-            android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:name=".Activities.Settings.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".Activities.Settings.UsageActivity"
+            android:label="@string/title_activity_usage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.Settings.ThirdPartyActivity"
+            android:label="@string/title_activity_third_party"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.Settings.TermsActivity"
+            android:label="@string/title_activity_terms"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.Settings.PolicyActivity"
+            android:label="@string/title_activity_policy"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
