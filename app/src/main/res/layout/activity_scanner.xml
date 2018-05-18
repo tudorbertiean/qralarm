@@ -31,15 +31,21 @@
         android:paddingRight="16dp"
         android:paddingBottom="20dp">
 
+
         <TextView
-            android:id="@+id/snoozeTxt"
+            android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/snooze"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="40sp" />
+            android:layout_height="wrap_content"
+            android:text="Swipe To Snooze"
+            android:textAlignment="center"
+            android:textSize="24sp" />
 
-
+        <SeekBar
+            android:id="@+id/scannerSnoozeBar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/swipe_background"
+            android:thumb="@mipmap/alarm_off"
+            android:thumbOffset="5dp" />
     </LinearLayout>
 </RelativeLayout>

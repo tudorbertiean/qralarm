@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,13 +48,15 @@ import ca.wlu.tbertiean.qralarm.Objects.Alarm;
 import ca.wlu.tbertiean.qralarm.R;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
+import static ca.wlu.tbertiean.qralarm.Activities.AlarmListActivity.context;
+
 
 public class ScannerActivity extends AppCompatActivity implements BarcodeRetriever {
     private static final String TAG = "ScannerActivity";
     private String ARG_SEND_ALARM_TO_RECEIVER = "ca.wlu.tbertiean.SendAlarm";
     private String ARG_IS_ONE_TIME = "ca.wlu.tbertiean.OneTimeAlarm";
     private MediaPlayer player;
-    private TextView snoozeText;
+    private SeekBar snoozeBar;
     private Vibrator vib;
     private Boolean isVibrate;
     private int snoozeTime;
@@ -73,17 +77,13 @@ public class ScannerActivity extends AppCompatActivity implements BarcodeRetriev
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         isVibrate = sharedPrefs.getBoolean("alarm_vibrate", false);
+        alarm_tone = sharedPrefs.getString("alarm_ringtone", "");
 
         playAlarm();
         openCameraScanner();
 
-        snoozeText = (TextView) findViewById(R.id.snoozeTxt);
-        snoozeText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snoozeAlarm();
-            }
-        });
+        snoozeBar = (SeekBar) findViewById(R.id.scannerSnoozeBar);
+        snoozeBar.setOnSeekBarChangeListener(seekBarListener);
     }
 
     @Override
@@ -112,33 +112,38 @@ public class ScannerActivity extends AppCompatActivity implements BarcodeRetriev
             }
         }
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        alarm_tone = sharedPrefs.getString("alarm_ringtone", "");
         player = new MediaPlayer();
         // Play the selected alarm or the default piano if none is selected
-        if (sharedPrefs.contains("alarm_ringtone"))
+        if (alarm_tone != null && !alarm_tone.isEmpty())
             player = MediaPlayer.create(this, Uri.parse(alarm_tone));
         else
             player = MediaPlayer.create(this, R.raw.piano_alarm);
 
-
-        // If SDK is current, use the devices alarm volume level not media volume level
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.e(TAG, "Current");
-            player.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .build()
-            );
-        } else {
-            Log.e(TAG, "Not Current");
-            player.setAudioStreamType(AudioManager.STREAM_ALARM);
-        }
-
+        //player.setAudioStreamType(AudioManager.STREAM_ALARM);
         player.setLooping(true);
         player.start();
     }
+
+    private SeekBar.OnSeekBarChangeListener seekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            if (seekBar.getProgress() <= 90)
+                seekBar.setProgress(0);
+            else
+                snoozeAlarm();
+
+        }
+    };
 
     public void snoozeAlarm(){
         Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);

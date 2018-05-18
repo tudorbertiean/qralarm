@@ -223,6 +223,7 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
         alarm.setToggle(on);
         ArrayList<Integer> alarmDays = alarm.getDaysActive();
         boolean snackbarShown = false;
+        long timeDifference = 0;
         long triggerAlarmAt = 0;
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         ListIterator iter = alarmDays.listIterator();
@@ -265,17 +266,17 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
                     if (day < currentCalendar.get(Calendar.DAY_OF_WEEK) ||
                             day == currentCalendar.get(Calendar.DAY_OF_WEEK) && calendar.getTimeInMillis() < currentCalendar.getTimeInMillis())
                         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 7);
+                    Log.d(TAG, "Time: " + calendar.getTimeInMillis());
                     manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
 
-                    // Determine which "time to trigger" to show on the snackbar
-                    if (day - currentCalendar.get(Calendar.DAY_OF_WEEK) == 0 && currentCalendar.getTimeInMillis() < calendar.getTimeInMillis()) {
-                        showTimeToTrigger(calendar.getTimeInMillis());
-                        snackbarShown = true;
-                    }
-                    if (day - currentCalendar.get(Calendar.DAY_OF_WEEK) == 1) {
+                    // Find the next possible day that will be triggered by calculating each time difference and selecting the smallest
+                    if (timeDifference >= (calendar.getTimeInMillis() - currentCalendar.getTimeInMillis()) || timeDifference == 0){
+                        timeDifference = calendar.getTimeInMillis() - currentCalendar.getTimeInMillis();
                         triggerAlarmAt = calendar.getTimeInMillis();
                     }
-                    if (!iter.hasNext() && !snackbarShown && triggerAlarmAt != 0)
+
+                    // Last alarm and time to trigger has not been shown yet
+                    if (!iter.hasNext())
                         showTimeToTrigger(triggerAlarmAt);
                 }
             }
