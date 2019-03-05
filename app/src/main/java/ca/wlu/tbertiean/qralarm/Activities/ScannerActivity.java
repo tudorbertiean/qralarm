@@ -151,7 +151,7 @@ public class ScannerActivity extends AppCompatActivity implements BarcodeRetriev
         alarmIntent.putExtra(ARG_SEND_ALARM_TO_RECEIVER, getIntent().getStringExtra(ARG_SEND_ALARM_TO_RECEIVER));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
         AlarmManager manager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        //In case is was edited,
+        //In case is was edited
         manager.cancel(pendingIntent);
         // Set the alarm to start
         Calendar calendar = Calendar.getInstance();

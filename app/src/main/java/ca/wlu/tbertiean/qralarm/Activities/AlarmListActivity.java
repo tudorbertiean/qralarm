@@ -1,9 +1,11 @@
 package ca.wlu.tbertiean.qralarm.Activities;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -50,10 +52,19 @@ public class AlarmListActivity extends AppCompatActivity implements AlarmAdapter
     private MenuItem mSettingsMenu, mDeleteMenu, mEditMenu;
     public static Boolean activityVisible; //Use when alarm is triggered to know if it should make a new activity or not
 
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onResume");
+        // Ensure camera permissions is enabled for user
+        int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
+        if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.CAMERA},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+        }
+
         setContentView(R.layout.activity_alarm_list);
         TAG = getLocalClassName();
         context = this;

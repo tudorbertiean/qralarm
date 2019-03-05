@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+*.docx
+app/release/
+/.idea/caches/

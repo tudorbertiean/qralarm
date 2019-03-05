@@ -1,6 +1,8 @@
 package ca.wlu.tbertiean.qralarm.Activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Environment;
@@ -54,6 +56,7 @@ public class AddAlarmActivity extends AppCompatActivity{
     private boolean isEdit = false;
     private Alarm editAlarm;
     private ArrayList<Integer> daysActive = new ArrayList<>();
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +95,21 @@ public class AddAlarmActivity extends AppCompatActivity{
 
             case R.id.addAlarm:
                 Log.d(TAG, "Add Alarm");
-                if (isEdit){
-                    intent.putExtra(ARG_EDIT_ALARM, createAlarm());
-                    setResult(EDIT_ALARM_RESULT, intent);
-                }else{
-                    intent.putExtra(ARG_ALARM, createAlarm());
-                    setResult(ADD_ALARM_RESULT, intent);
+                // Ensure camera permissions is enabled for user
+                int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
+                if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[] {Manifest.permission.CAMERA},
+                            REQUEST_CODE_ASK_PERMISSIONS);
+                } else {
+                    if (isEdit) {
+                        intent.putExtra(ARG_EDIT_ALARM, createAlarm());
+                        setResult(EDIT_ALARM_RESULT, intent);
+                    }else{
+                        intent.putExtra(ARG_ALARM, createAlarm());
+                        setResult(ADD_ALARM_RESULT, intent);
+                    }
+                    finish();
                 }
-                finish();
 
             default:
                 return super.onOptionsItemSelected(menuItem);
